@@ -29,7 +29,7 @@ def main():
                                          binary=cv2.THRESH_BINARY,
                                          trackbar_value=trackbar_val)
         trackbar_val2 = get_trackbar_value(trackbar_name=trackbar_name2, window_name=window_name)
-        frame_denoised = denoise(frame=adapt_frame, method=cv2.MORPH_ELLIPSE, radius=trackbar_val2)
+        frame_denoised = denoise(frame=adapt_frame, method=cv2.MORPH_CROSS, radius=trackbar_val2)
 
         alphabet = cv2.imread('../static/images/phone.png')
         gray2 = cv2.cvtColor(alphabet, cv2.COLOR_RGB2GRAY)

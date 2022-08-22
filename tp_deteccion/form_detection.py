@@ -6,7 +6,6 @@ from trackbar import create_trackbar, get_trackbar_value
 
 
 def main():
-
     window_name = 'Window'
     trackbar_name = 'Threshold'
     trackbar_name2 = 'Noise filter'
@@ -26,10 +25,10 @@ def main():
         ret, frame = cap.read()
         gray_frame = apply_color_convertion(frame=frame, color=cv2.COLOR_RGB2GRAY)
         trackbar_val = get_trackbar_value(trackbar_name=trackbar_name, window_name=window_name)
-        adapt_frame = adaptive_threshold(frame=gray_frame, slider_max=slider_max,
-                                         adaptative=cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                         binary=cv2.THRESH_BINARY,
-                                         trackbar_value=trackbar_val)
+        val, adapt_frame = adaptive_threshold(frame=gray_frame, slider_max=slider_max,
+                                              adaptative=cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                              binary=cv2.THRESH_BINARY,
+                                              trackbar_value=trackbar_val)
         trackbar_val2 = get_trackbar_value(trackbar_name=trackbar_name2, window_name=window_name)
 
         frame_denoised = denoise(frame=adapt_frame, method=cv2.MORPH_ELLIPSE, radius=trackbar_val2)
@@ -44,7 +43,8 @@ def main():
         anteojos = cv2.imread('../static/images/anteojos.jpeg')
         gray2anteojos = cv2.cvtColor(anteojos, cv2.COLOR_RGB2GRAY)
         ret2anteojos, thresh2anteojos = cv2.threshold(gray2anteojos, 127, 255, cv2.THRESH_BINARY)
-        contoursblahAnteojos, hierarchyAnteojos = cv2.findContours(thresh2anteojos, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        contoursblahAnteojos, hierarchyAnteojos = cv2.findContours(thresh2anteojos, cv2.RETR_TREE,
+                                                                   cv2.CHAIN_APPROX_NONE)
         cnt1anteojos = contoursblahAnteojos[1]
 
         contours = get_contours(frame=frame_denoised, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)

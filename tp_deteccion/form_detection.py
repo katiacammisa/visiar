@@ -1,7 +1,7 @@
 import cv2
 
 from contour import get_contours, get_biggest_contour, compare_contours
-from frame_editor import apply_color_convertion, adaptive_threshold, denoise, draw_contours
+from frame_editor import apply_color_convertion, denoise, draw_contours, adaptive_threshold
 from trackbar import create_trackbar, get_trackbar_value
 
 
@@ -9,7 +9,7 @@ def main():
     window_name = 'Window'
     trackbar_name = 'Threshold'
     trackbar_name2 = 'Noise filter'
-    slider_max = 151
+    slider_max = 255
     cv2.namedWindow(window_name)
     cap = cv2.VideoCapture(0)
     biggest_contour = None
@@ -25,12 +25,12 @@ def main():
         ret, frame = cap.read()
         gray_frame = apply_color_convertion(frame=frame, color=cv2.COLOR_RGB2GRAY)
         trackbar_val = get_trackbar_value(trackbar_name=trackbar_name, window_name=window_name)
-        val, adapt_frame = adaptive_threshold(frame=gray_frame, slider_max=slider_max,
-                                              adaptative=cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                              binary=cv2.THRESH_BINARY,
-                                              trackbar_value=trackbar_val)
+        ret10, adapt_frame = cv2.threshold(gray_frame, trackbar_val, slider_max, cv2.THRESH_BINARY)
+        # adapt_frame = adaptive_threshold(frame=gray_frame, slider_max=slider_max,
+        #                                  adaptative=cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        #                                  binary=cv2.THRESH_BINARY,
+        #                                  trackbar_value=trackbar_val)
         trackbar_val2 = get_trackbar_value(trackbar_name=trackbar_name2, window_name=window_name)
-
         frame_denoised = denoise(frame=adapt_frame, method=cv2.MORPH_ELLIPSE, radius=trackbar_val2)
         # terminamos el 3
 
@@ -43,8 +43,7 @@ def main():
         anteojos = cv2.imread('../static/images/anteojos.jpeg')
         gray2anteojos = cv2.cvtColor(anteojos, cv2.COLOR_RGB2GRAY)
         ret2anteojos, thresh2anteojos = cv2.threshold(gray2anteojos, 127, 255, cv2.THRESH_BINARY)
-        contoursblahAnteojos, hierarchyAnteojos = cv2.findContours(thresh2anteojos, cv2.RETR_TREE,
-                                                                   cv2.CHAIN_APPROX_NONE)
+        contoursblahAnteojos, hierarchyAnteojos = cv2.findContours(thresh2anteojos, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
         cnt1anteojos = contoursblahAnteojos[1]
 
         contours = get_contours(frame=frame_denoised, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
@@ -59,27 +58,22 @@ def main():
 
         # moments_alphabet = cv2.moments(biggest_contour)
         # huMoments_alphabet = cv2.HuMoments(moments_alphabet)
+        if not cv2.matchShapes(biggest_contour, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.4 and not cv2.matchShapes(biggest_contour, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
+            x, y, w, h = cv2.boundingRect(biggest_contour)
+            cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
+            cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
+
         if cv2.matchShapes(biggest_contour, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
             x, y, w, h = cv2.boundingRect(biggest_contour)
             cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
             cv2.putText(imGris, 'Celular', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
             # cv2.drawContours(imGris, biggest_contour, -1, color_white, 20)
 
-        else:
-            x, y, w, h = cv2.boundingRect(biggest_contour)
-            cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
-            cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
-
         if cv2.matchShapes(biggest_contour, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
             x, y, w, h = cv2.boundingRect(biggest_contour)
             cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
             cv2.putText(imGris, 'Anteojos', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
             # cv2.drawContours(imGris, biggest_contour, -1, color_red, 20)
-
-        else:
-            x, y, w, h = cv2.boundingRect(biggest_contour)
-            cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
-            cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
 
         cv2.imshow('Tp Detección', imGris)
         if cv2.waitKey(1) & 0xFF == ord('k'):

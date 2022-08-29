@@ -6,7 +6,7 @@ from trackbar import create_trackbar, get_trackbar_value
 
 
 def main():
-    window_name = 'Window'
+    window_name = 'Tp Detección'
     trackbar_name = 'Threshold'
     trackbar_name2 = 'Noise filter'
     slider_max = 255
@@ -47,8 +47,14 @@ def main():
         cnt1anteojos = contoursblahAnteojos[1]
 
         contours = get_contours(frame=frame_denoised, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
-        if len(contours) > 0:
-            biggest_contour = get_biggest_contour(contours=contours)
+        filtered = []
+        for c in contours:
+            # if 200 > cv2.contourArea(c):
+            filtered.append(c)
+        cv2.drawContours(frame, filtered, -1, (255, 0, 255))
+        cv2.imshow('kk', frame)
+        if len(filtered) > 0:
+            biggest_contour = get_biggest_contour(contours=filtered)
             # hu_moments = get_hu_moments(contour=biggest_contour)
             # if compare_contours(contour_to_compare=biggest_contour, saved_contours=saved_contours, max_diff=1):
             #     draw_contours(frame=frame_denoised, contours=biggest_contour, color=color_white, thickness=20)

@@ -4,3 +4,6 @@ opencv-contrib-python==4.5.5.64
 imutils~=0.5.4
 matplotlib~=3.5.3
 opencv-python~=4.6.0.66
+
+scikit-learn~=1.1.2
+joblib~=1.1.0

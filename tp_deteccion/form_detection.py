@@ -50,7 +50,7 @@ def main():
         contours = get_contours(frame=frame_denoised, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
         filtered = []
         for c in contours:
-            if 7000 < cv2.contourArea(c) < 10000:
+            if 7000 < cv2.contourArea(c):
                 filtered.append(c)
 
         imGris = cv2.cvtColor(frame_denoised, cv2.COLOR_GRAY2RGB)
@@ -58,22 +58,23 @@ def main():
         if len(filtered) > 0:
 
             for f in filtered:
-                if not cv2.matchShapes(f, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.4 and not cv2.matchShapes(biggest_contour, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
-                    x, y, w, h = cv2.boundingRect(f)
-                    cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
-                    cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
-
-                if cv2.matchShapes(f, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
+                if cv2.matchShapes(f, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.2:
                     x, y, w, h = cv2.boundingRect(f)
                     cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
                     cv2.putText(imGris, 'Celular', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
                     # cv2.drawContours(imGris, biggest_contour, -1, color_white, 20)
 
-                if cv2.matchShapes(f, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
+                elif cv2.matchShapes(f, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.2:
                     x, y, w, h = cv2.boundingRect(f)
                     cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
                     cv2.putText(imGris, 'Anteojos', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
                     # cv2.drawContours(imGris, biggest_contour, -1, color_red, 20)
+
+                else:
+                    x, y, w, h = cv2.boundingRect(f)
+                    cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
+                    cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
+
 
         cv2.imshow('Tp Detección', imGris)
         if cv2.waitKey(1) & 0xFF == ord('k'):

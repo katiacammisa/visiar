@@ -1,5 +1,11 @@
 from math import copysign, log10
 import cv2
+import numpy as np
+
+
+def parse(hu_moments_view):
+    var = np.array(hu_moments_view)
+    return var.flatten()
 
 
 def get_hu_moments(contour):
@@ -7,7 +13,7 @@ def get_hu_moments(contour):
     hu_moments = cv2.HuMoments(moments)
     for i in range(len(hu_moments)):
         hu_moments[i] = -1 * copysign(1.0, hu_moments[i]) * log10(abs(hu_moments[i]))
-    return hu_moments
+    return parse(hu_moments)
 
 
 def compare_hu_moments(hu_moments, saved_hu_moments, max_diff):

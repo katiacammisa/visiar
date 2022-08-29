@@ -24,6 +24,7 @@ def main():
     while True:
         ret, frame = cap.read()
         gray_frame = apply_color_convertion(frame=frame, color=cv2.COLOR_RGB2GRAY)
+        # gray_frame = cv2.bitwise_not(gray_frame2)
         trackbar_val = get_trackbar_value(trackbar_name=trackbar_name, window_name=window_name)
         ret10, adapt_frame = cv2.threshold(gray_frame, trackbar_val, slider_max, cv2.THRESH_BINARY)
         # adapt_frame = adaptive_threshold(frame=gray_frame, slider_max=slider_max,
@@ -49,43 +50,36 @@ def main():
         contours = get_contours(frame=frame_denoised, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
         filtered = []
         for c in contours:
-            # if 200 > cv2.contourArea(c):
-            filtered.append(c)
-        cv2.drawContours(frame, filtered, -1, (255, 0, 255))
-        cv2.imshow('kk', frame)
-        if len(filtered) > 0:
-            biggest_contour = get_biggest_contour(contours=filtered)
-            # hu_moments = get_hu_moments(contour=biggest_contour)
-            # if compare_contours(contour_to_compare=biggest_contour, saved_contours=saved_contours, max_diff=1):
-            #     draw_contours(frame=frame_denoised, contours=biggest_contour, color=color_white, thickness=20)
-            # draw_contours(frame=frame_denoised, contours=biggest_contour, color=color_white, thickness=20)
+            if 7000 < cv2.contourArea(c) < 10000:
+                filtered.append(c)
 
         imGris = cv2.cvtColor(frame_denoised, cv2.COLOR_GRAY2RGB)
 
-        # moments_alphabet = cv2.moments(biggest_contour)
-        # huMoments_alphabet = cv2.HuMoments(moments_alphabet)
-        if not cv2.matchShapes(biggest_contour, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.4 and not cv2.matchShapes(biggest_contour, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
-            x, y, w, h = cv2.boundingRect(biggest_contour)
-            cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
-            cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
+        if len(filtered) > 0:
 
-        if cv2.matchShapes(biggest_contour, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
-            x, y, w, h = cv2.boundingRect(biggest_contour)
-            cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
-            cv2.putText(imGris, 'Celular', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
-            # cv2.drawContours(imGris, biggest_contour, -1, color_white, 20)
+            for f in filtered:
+                if not cv2.matchShapes(f, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.4 and not cv2.matchShapes(biggest_contour, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
+                    x, y, w, h = cv2.boundingRect(f)
+                    cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
+                    cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
 
-        if cv2.matchShapes(biggest_contour, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
-            x, y, w, h = cv2.boundingRect(biggest_contour)
-            cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
-            cv2.putText(imGris, 'Anteojos', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
-            # cv2.drawContours(imGris, biggest_contour, -1, color_red, 20)
+                if cv2.matchShapes(f, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
+                    x, y, w, h = cv2.boundingRect(f)
+                    cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
+                    cv2.putText(imGris, 'Celular', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
+                    # cv2.drawContours(imGris, biggest_contour, -1, color_white, 20)
+
+                if cv2.matchShapes(f, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.4:
+                    x, y, w, h = cv2.boundingRect(f)
+                    cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
+                    cv2.putText(imGris, 'Anteojos', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
+                    # cv2.drawContours(imGris, biggest_contour, -1, color_red, 20)
 
         cv2.imshow('Tp Detección', imGris)
         if cv2.waitKey(1) & 0xFF == ord('k'):
-            if biggest_contour is not None:
+            if f is not None:
                 # save_moment(hu_moments=hu_moments, file_name="hu_moments.txt")
-                saved_contours.append(biggest_contour)
+                saved_contours.append(f)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

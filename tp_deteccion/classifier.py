@@ -14,7 +14,7 @@ def main():
     slider_max = 255
     cv2.namedWindow(window_name)
     color_green = (0, 255, 0)
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture("http://192.168.68.125:4747/video")
     create_trackbar(trackbar_name, window_name, slider_max)
     create_trackbar(trackbar_name2, window_name, 50)
     hu_moments = []

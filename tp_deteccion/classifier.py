@@ -1,8 +1,8 @@
-from joblib import load
 import cv2
+from joblib import load
 
-from contour import get_contours, get_biggest_contour, compare_contours
-from frame_editor import apply_color_convertion, denoise, draw_contours, adaptive_threshold
+from contour import get_contours
+from frame_editor import apply_color_convertion, denoise
 from moment import get_hu_moments
 from trackbar import create_trackbar, get_trackbar_value
 
@@ -15,7 +15,6 @@ def main():
     cv2.namedWindow(window_name)
     color_green = (0, 255, 0)
     cap = cv2.VideoCapture(0)
-    biggest_contour = None
     create_trackbar(trackbar_name, window_name, slider_max)
     create_trackbar(trackbar_name2, window_name, 50)
     hu_moments = []

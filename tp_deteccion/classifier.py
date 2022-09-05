@@ -14,11 +14,13 @@ def main():
     slider_max = 255
     cv2.namedWindow(window_name)
     color_green = (0, 255, 0)
-    cap = cv2.VideoCapture("http://192.168.68.125:4747/video")
+    cap = cv2.VideoCapture(0)
     create_trackbar(trackbar_name, window_name, slider_max)
     create_trackbar(trackbar_name2, window_name, 50)
     hu_moments = []
     saved_contours = []
+    # carga el modelo
+    classifier = load('training.joblib')
 
     while True:
         ret, frame = cap.read()
@@ -42,12 +44,11 @@ def main():
             imGris = cv2.cvtColor(frame_denoised, cv2.COLOR_GRAY2RGB)
 
             moments_view = get_hu_moments(f)
-            hu_moments.append(moments_view)
+            aux = []
+            for value in moments_view:
+                aux.append(value[0])
 
-            # carga el modelo
-            classifier = load('training.joblib')
-
-            predicted = classifier.predict(hu_moments)
+            predicted = classifier.predict(aux)
             cv2.drawContours(imGris, f, -1, color_green, 20)
             x, y, w, h = cv2.boundingRect(f)
             text = 'Figura'

@@ -1,8 +1,8 @@
 import cv2
 
 
-def create_trackbar(trackbar_name, window_name, slider_max):
-    cv2.createTrackbar(trackbar_name, window_name, 0, slider_max, on_trackbar)
+def create_trackbar(trackbar_name, window_name, min, slider_max):
+    cv2.createTrackbar(trackbar_name, window_name, min, slider_max, on_trackbar)
 
 
 def on_trackbar(val):

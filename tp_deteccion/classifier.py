@@ -1,5 +1,7 @@
 import cv2
 from joblib import load
+import numpy as np
+
 
 from contour import get_contours
 from frame_editor import apply_color_convertion, denoise
@@ -11,15 +13,15 @@ def main():
     window_name = 'Tp Detección'
     trackbar_name = 'Threshold'
     trackbar_name2 = 'Noise filter'
+    trackbar_name3 = 'Size filter'
     slider_max = 255
     cv2.namedWindow(window_name)
     color_green = (0, 255, 0)
-    cap = cv2.VideoCapture(0)
-    create_trackbar(trackbar_name, window_name, slider_max)
-    create_trackbar(trackbar_name2, window_name, 50)
-    hu_moments = []
+    cap = cv2.VideoCapture("http://172.20.10.5:4747/video")
+    create_trackbar(trackbar_name, window_name, 100, slider_max)
+    create_trackbar(trackbar_name2, window_name, 0, 50)
+    create_trackbar(trackbar_name3, window_name, 60000, 100000)
     saved_contours = []
-    # carga el modelo
     classifier = load('training.joblib')
 
     while True:
@@ -33,36 +35,33 @@ def main():
         #                                  trackbar_value=trackbar_val)
         trackbar_val2 = get_trackbar_value(trackbar_name=trackbar_name2, window_name=window_name)
         frame_denoised = denoise(frame=adapt_frame, method=cv2.MORPH_ELLIPSE, radius=trackbar_val2)
+        trackbar_val3 = get_trackbar_value(trackbar_name=trackbar_name3, window_name=window_name)
 
         contours = get_contours(frame=frame_denoised, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
         filtered = []
         for c in contours:
-            if 500 < cv2.contourArea(c):
+            if 5000 < cv2.contourArea(c) < trackbar_val3:
                 filtered.append(c)
 
         for f in filtered:
             imGris = cv2.cvtColor(frame_denoised, cv2.COLOR_GRAY2RGB)
 
             moments_view = get_hu_moments(f)
-            aux = []
-            for value in moments_view:
-                aux.append(value[0])
 
-            predicted = classifier.predict(aux)
+            predicted = classifier.predict([moments_view])
             cv2.drawContours(imGris, f, -1, color_green, 20)
             x, y, w, h = cv2.boundingRect(f)
             text = 'Figura'
-            if predicted[len(predicted) - 1] == 1:
+            if predicted == 1:
                 text = 'Corazon'
 
-            if predicted[len(predicted) - 1] == 2:
+            if predicted == 2:
                 text = 'Estrella'
 
-            if predicted[len(predicted) - 1] == 3:
+            if predicted == 3:
                 text = 'Cuadrado'
 
             cv2.putText(imGris, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
-            print(predicted)
 
             cv2.imshow('Tp Detección', imGris)
             if cv2.waitKey(1) & 0xFF == ord('k'):

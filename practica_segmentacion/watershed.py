@@ -1,56 +1,64 @@
 import numpy as np
 import cv2 as cv
 
-img = cv.imread('/Users/juancruzpisani/projects/Austral/visionArtificial/static/images/water_coins.jpeg')
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-_, thresh = cv.threshold(gray, 0, 255, cv.THRESH_BINARY_INV+cv.THRESH_OTSU)
+img = cv.imread('../static/images/water_coins.jpeg')
 
-cv.imshow("img", thresh)
+selectedNumber = 1
 
-cv.waitKey()
-# noise removal
-kernel = np.ones((3, 3), np.uint8)
-opening = cv.morphologyEx(thresh, cv.MORPH_OPEN, kernel, iterations=2)
-closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel, iterations=2)
+labels = np.zeros((img.shape[1], img.shape[0]), np.float64)
 
-# sure background area
-sure_bg = cv.dilate(closing, kernel, iterations=3)
-
-cv.imshow("sure_bg", sure_bg)
-
-cv.waitKey()
-# Finding sure foreground area
-sure_fg = cv.erode(closing, kernel, iterations=3)
-
-# SE DEBERIA USAR EL DISTANCE TRANSFORM ANTES Q EL ERODE
-# PQ LOS OBJETOS ESTAN TODOS PEGADOS PERO DE BAJA PQ NOSE SI HAY Q EXPLCIAR ESO
-# dist_transform = cv.distanceTransform(opening,cv.DIST_L2,5)
-# ret, sure_fg = cv.threshold(dist_transform,0.7*dist_transform.max(),255,0)
+colorMap = {
+    1: (255, 255, 255),
+    2: (255, 0, 0),
+    3: (0, 255, 0),
+    4: (0, 0, 255),
+    5: (0, 0, 0),
+}
 
 
-cv.imshow("sure_fg", sure_fg)
+def draw_circles(event, x, y, flags, param):
+    if event == cv.EVENT_LBUTTONDOWN:
+        cv.circle(img, (x, y), 7, colorMap.get(selectedNumber), -1)
+        labels[x][y] = selectedNumber
+        cv.imshow('img', img)
 
-cv.waitKey()
-# Finding unknown region
-sure_fg = np.uint8(sure_fg)
-unknown = cv.subtract(sure_bg, sure_fg)
 
-# Marker labelling
-_, markers = cv.connectedComponents(sure_fg)
-print(markers)
-print("------------------")
-# Add one to all labels so that sure background is not 0, but 1
-markers = markers+1
-# Now, mark the region of unknown with zero
-markers[unknown == 255] = 0
+def watershed():
+    global selectedNumber
+    # gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    # _, thresh = cv.threshold(gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU)
 
-markers = cv.watershed(img, markers)
+    cv.imshow("img", img)
 
-print(img)
-print(markers)
+    if cv.waitKey() == ord('1'):
+        selectedNumber = 1
+    elif cv.waitKey() == ord('2'):
+        selectedNumber = 2
+    elif cv.waitKey() == ord('3'):
+        selectedNumber = 3
+    elif cv.waitKey() == ord('4'):
+        selectedNumber = 4
+    elif cv.waitKey() == ord('5'):
+        selectedNumber = 5
 
-img[markers == -1] = [255, 0, 0]
+    # noise removal
+    # kernel = np.ones((3, 3), np.uint8)
+    # opening = cv.morphologyEx(thresh, cv.MORPH_OPEN, kernel, iterations=2)
+    # closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel, iterations=2)
 
-cv.imshow("img", img)
+    cv.setMouseCallback('img', draw_circles)
+    cv.imshow('img', img)
 
-cv.waitKey()
+    # markers = cv.watershed(img, markers)
+    #
+    # print(img)
+    # print(markers)
+    #
+    # img[markers == -1] = [255, 0, 0]
+
+    cv.imshow("img", img)
+
+    cv.waitKey()
+
+
+watershed()

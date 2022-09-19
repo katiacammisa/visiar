@@ -26,5 +26,5 @@ def grabcut():
         # ?????????????
         img = img * mask2[:, :, np.newaxis]
 
-        cv.imshow("screenshot", img)
+        cv.imshow("result", img)
         cv.waitKey()

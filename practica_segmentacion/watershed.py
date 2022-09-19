@@ -5,8 +5,7 @@ img = cv.imread('../static/images/water_coins.jpeg')
 
 selectedNumber = 1
 
-labels = np.zeros((img.shape[0], img.shape[1]), np.float32)
-
+labels = np.zeros((img.shape[0], img.shape[1]), np.int32)
 
 colorMap = {
     1: (255, 255, 255),
@@ -27,10 +26,10 @@ def draw_circles(event, x, y, flags, param):
 def watershed():
     global selectedNumber
     global labels
-    # gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # convierte a gris
     # _, thresh = cv.threshold(gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU)
 
-    cv.imshow("img", img)
+    cv.imshow("img", img)  # muestra la imagen guardada
 
     while True:
 
@@ -45,25 +44,23 @@ def watershed():
         elif cv.waitKey() == ord('5'):
             selectedNumber = 5
 
-        # noise removal
-        # kernel = np.ones((3, 3), np.uint8)
-        # opening = cv.morphologyEx(thresh, cv.MORPH_OPEN, kernel, iterations=2)
-        # closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel, iterations=2)
+        # cv.setMouseCallback('img', draw_circles)  # permite clickear
+        cv.imshow('img', gray)  # muestra la imagen gris
 
-        cv.setMouseCallback('img', draw_circles)
-        cv.imshow('img', img)
-
-        # img[markers == -1] = [255, 0, 0]
-
-        if cv.waitKey() == ord(' '):
-            print(type(labels))
-            print(type(img))
-            sure_fg = np.uint8(labels)
-            _, markers = cv.connectedComponents(sure_fg)
-            print(markers)
-            markers = cv.watershed(img, markers)
-            print(markers)
-            break
+        if cv.waitKey() == ord(' '):  # espera un input que sea igual a ESPACIO
+            fg = np.uint8(np.random.random((2, 2, 3)) * 255)
+            dst = cv.integral(fg)
+            ret, thresh = cv.threshold(gray, 127, 255, cv.THRESH_BINARY)  # transforma la imagen gris a binario
+            cv.imshow('thresh', thresh)
+            cv.waitKey()
+            _, labels = cv.connectedComponents(image=thresh)
+            labels = labels + 1
+            newLabels = labels.astype(np.int32)
+            water = cv.watershed(dst, newLabels)
+            # img[markers == 0] = [255, 0, 0]
+            cv.imshow('water', water)
+            if cv.waitKey() == ord('m'):
+                break
 
 
 watershed()

@@ -56,7 +56,10 @@ def watershed():
         # img[markers == -1] = [255, 0, 0]
 
         if cv.waitKey() == ord(' '):
-            _, markers = cv.connectedComponents(labels)
+            print(type(labels))
+            print(type(img))
+            sure_fg = np.uint8(labels)
+            _, markers = cv.connectedComponents(sure_fg)
             print(markers)
             markers = cv.watershed(img, markers)
             print(markers)

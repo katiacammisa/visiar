@@ -1,11 +1,15 @@
 import numpy as np
 import cv2 as cv
 
-img = cv.imread('../static/images/water_coins.jpeg')
+img = cv.imread('../static/images/messi.jpg')
+
+img_copy = img.copy()
 
 selectedNumber = 1
 
-labels = np.zeros((img.shape[0], img.shape[1]), np.int32)
+labels = np.zeros((img.shape[0], img.shape[1]), np.uint8)
+
+labels_copy = labels.copy()
 
 colorMap = {
     1: (255, 255, 255),
@@ -16,20 +20,28 @@ colorMap = {
 }
 
 
-def draw_circles(event, x, y, flags, param):
+def draw_circles(event, x, y, _1, _2):
     if event == cv.EVENT_LBUTTONDOWN:
-        cv.circle(img, (x, y), 7, colorMap.get(selectedNumber), -1)
-        labels[y][x] = selectedNumber
-        cv.imshow('img', img)
+        cv.circle(img_copy, (x, y), 7, colorMap.get(selectedNumber), -1)
+        cv.circle(labels, (x, y), 7, colorMap.get(selectedNumber), -1)
+        cv.circle(labels_copy, (x, y), 7, colorMap.get(selectedNumber), -1)
 
 
 def watershed():
     global selectedNumber
     global labels
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # convierte a gris
-    # _, thresh = cv.threshold(gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU)
+    global labels_copy
+    global img
 
-    cv.imshow("img", img)  # muestra la imagen guardada
+    vc = cv.VideoCapture(0)
+    _, frame = vc.read()
+    frame_copy = frame.copy()
+
+    cv.imshow("img", frame_copy)  # muestra la copia de la imagen guardada
+    map = cv.applyColorMap(labels_copy, cv.COLORMAP_JET)
+    cv.imshow("labels", map)  # muestra la imagen guardada
+
+    cv.setMouseCallback('img', draw_circles)
 
     while True:
 
@@ -44,23 +56,23 @@ def watershed():
         elif cv.waitKey() == ord('5'):
             selectedNumber = 5
 
-        # cv.setMouseCallback('img', draw_circles)  # permite clickear
-        cv.imshow('img', gray)  # muestra la imagen gris
-
         if cv.waitKey() == ord(' '):  # espera un input que sea igual a ESPACIO
-            fg = np.uint8(np.random.random((2, 2, 3)) * 255)
-            dst = cv.integral(fg)
-            ret, thresh = cv.threshold(gray, 127, 255, cv.THRESH_BINARY)  # transforma la imagen gris a binario
-            cv.imshow('thresh', thresh)
-            cv.waitKey()
-            _, labels = cv.connectedComponents(image=thresh)
-            labels = labels + 1
-            newLabels = labels.astype(np.int32)
-            water = cv.watershed(dst, newLabels)
-            # img[markers == 0] = [255, 0, 0]
-            cv.imshow('water', water)
-            if cv.waitKey() == ord('m'):
+            print(labels)
+            print(np.int32(labels))
+            frame_copy2 = frame.copy()
+            water = cv.watershed(frame_copy2, np.int32(labels))
+
+            frame_copy2[water == -1] = [0, 0, 255]
+            for n in range(1, 6):
+                frame_copy2[water == n] = colorMap[n]
+
+            print(water)
+            cv.imshow('result', frame_copy2)
+
+            if cv.waitKey() == ord('q'):
                 break
+
+        vc.release()
 
 
 watershed()

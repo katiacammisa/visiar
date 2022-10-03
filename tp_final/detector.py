@@ -14,16 +14,12 @@ def main():
     cap = cv2.VideoCapture(0)  # Replace 0 with droidcam app link (hhtp://IP:port/video)
     color_red = (0, 0, 255)
     color_green = (0, 255, 0)
-    create_trackbar(trackbar_name, window_name, slider_max)
-    create_trackbar(trackbar_name2, window_name, 50)
+    create_trackbar(trackbar_name, window_name, 1, slider_max)
+    create_trackbar(trackbar_name2, window_name, 1, 50)
+    detected_contours = []
     saved_contours = []
 
-    for n in range(1, 152):
-        img = cv2.imread(f'./images/{n}.jpeg')
-        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-        ret2, thresh2 = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
-        contoursPoke, hierarchy = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-        cnt = contoursPoke[0]
+
 
     while True:
         ret, frame = cap.read()
@@ -32,19 +28,6 @@ def main():
         ret10, adapt_frame = cv2.threshold(gray_frame, trackbar_val, slider_max, cv2.THRESH_BINARY)
         trackbar_val2 = get_trackbar_value(trackbar_name=trackbar_name2, window_name=window_name)
         frame_denoised = denoise(frame=adapt_frame, method=cv2.MORPH_ELLIPSE, radius=trackbar_val2)
-
-        # phoneImg = cv2.imread('../static/images/image.jpeg')
-        # gray2 = cv2.cvtColor(phoneImg, cv2.COLOR_RGB2GRAY)
-        # ret2, thresh2 = cv2.threshold(gray2, 127, 255, cv2.THRESH_BINARY)
-        # contoursblah, hierarchy = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-        # cnt1 = contoursblah[2]
-        #
-        # anteojosImg = cv2.imread('../static/images/anteojos.jpeg')
-        # gray2anteojos = cv2.cvtColor(anteojosImg, cv2.COLOR_RGB2GRAY)
-        # ret2anteojos, thresh2anteojos = cv2.threshold(gray2anteojos, 127, 255, cv2.THRESH_BINARY)
-        # contoursblahAnteojos, hierarchyAnteojos = cv2.findContours(thresh2anteojos, cv2.RETR_TREE,
-        #                                                            cv2.CHAIN_APPROX_NONE)
-        # cnt1anteojos = contoursblahAnteojos[1]
 
         contours = get_contours(frame=frame_denoised, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
         filtered = []
@@ -63,20 +46,21 @@ def main():
 
                 if cv2.waitKey(1) & 0xFF == ord('k'):
                     if f is not None:
-                        # save_moment(hu_moments=hu_moments, file_name="hu_moments.txt")
-                        saved_contours.append(f)
+                        detected_contours.append(f)
 
-                if cv2.matchShapes(f, cnt1, cv2.CONTOURS_MATCH_I2, 0) < 0.2:
-                    x, y, w, h = cv2.boundingRect(f)
-                    cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
-                    cv2.putText(imGris, 'Celular', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
-                    # cv2.drawContours(imGris, biggest_contour, -1, color_white, 20)
+                for n in range(1, 2):
+                    img = cv2.imread(f'./images/{n}.png')
+                    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                    ret2, thresh2 = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+                    contoursPoke, hierarchy = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+                    cv2.drawContours(imGris, contoursPoke[20], -1, color_green, 20)
 
-                elif cv2.matchShapes(f, cnt1anteojos, cv2.CONTOURS_MATCH_I2, 0) < 0.2:
-                    x, y, w, h = cv2.boundingRect(f)
-                    cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
-                    cv2.putText(imGris, 'Anteojos', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
-                    # cv2.drawContours(imGris, biggest_contour, -1, color_red, 20)
+                for contour in saved_contours:
+                    if cv2.matchShapes(f, contour, cv2.CONTOURS_MATCH_I2, 0) < 0.2:
+                        x, y, w, h = cv2.boundingRect(f)
+                        # cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
+                        # cv2.putText(imGris, '', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
+                        # cv2.drawContours(imGris, contours, -1, color_green, 20)
 
                 else:
                     x, y, w, h = cv2.boundingRect(f)

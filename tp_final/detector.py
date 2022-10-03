@@ -2,6 +2,7 @@ import cv2
 
 from contour import get_contours, get_poke_contours
 from frame_editor import apply_color_convertion, denoise
+from details import getPokemonData
 from trackbar import create_trackbar, get_trackbar_value
 
 
@@ -18,6 +19,7 @@ def main():
     create_trackbar(trackbar_name2, window_name, 1, 50)
     detected_contours = []
     saved_contours = []
+    pokeDict = getPokemonData()
 
     for n in range(1, 2):
         img = cv2.imread(f'./images/{n}.png')
@@ -54,11 +56,12 @@ def main():
                     if f is not None:
                         detected_contours.append(f)
 
-                for contour in saved_contours:
-                    if cv2.matchShapes(f, contour, cv2.CONTOURS_MATCH_I2, 0) < 0.2:
+                for index in range(0, len(saved_contours)):
+                    if cv2.matchShapes(f, saved_contours[index], cv2.CONTOURS_MATCH_I2, 0) < 0.2:
                         x, y, w, h = cv2.boundingRect(f)
                         # cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
                         # cv2.putText(imGris, '', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
+                        cv2.putText(imGris, pokeDict.get(index).name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
                         cv2.drawContours(imGris, contours, -1, color_green, 20)
 
                 else:

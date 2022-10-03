@@ -1,6 +1,6 @@
 import cv2
 
-from contour import get_contours
+from contour import get_contours, get_poke_contours
 from frame_editor import apply_color_convertion, denoise
 from trackbar import create_trackbar, get_trackbar_value
 
@@ -16,14 +16,10 @@ def main():
     color_green = (0, 255, 0)
     create_trackbar(trackbar_name, window_name, slider_max)
     create_trackbar(trackbar_name2, window_name, 50)
-    saved_contours = []
+    saved_contours = get_poke_contours()
+    print(saved_contours)
 
-    for n in range(1, 152):
-        img = cv2.imread(f'./images/{n}.jpeg')
-        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-        ret2, thresh2 = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
-        contoursPoke, hierarchy = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-        cnt = contoursPoke[0]
+    
 
     while True:
         ret, frame = cap.read()

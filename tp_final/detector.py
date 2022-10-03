@@ -19,7 +19,13 @@ def main():
     detected_contours = []
     saved_contours = []
 
-
+    for n in range(1, 2):
+        img = cv2.imread(f'./images/{n}.png')
+        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        ret2, thresh2 = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+        contoursPoke, hierarchy = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        # cv2.drawContours(imGris, contoursPoke[20], -1, color_green, 20)
+        saved_contours.append(contoursPoke[20])
 
     while True:
         ret, frame = cap.read()
@@ -48,19 +54,12 @@ def main():
                     if f is not None:
                         detected_contours.append(f)
 
-                for n in range(1, 2):
-                    img = cv2.imread(f'./images/{n}.png')
-                    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-                    ret2, thresh2 = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
-                    contoursPoke, hierarchy = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-                    cv2.drawContours(imGris, contoursPoke[20], -1, color_green, 20)
-
                 for contour in saved_contours:
                     if cv2.matchShapes(f, contour, cv2.CONTOURS_MATCH_I2, 0) < 0.2:
                         x, y, w, h = cv2.boundingRect(f)
                         # cv2.rectangle(imGris, (x, y), (x + w, y + h), color_green, 20)
                         # cv2.putText(imGris, '', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
-                        # cv2.drawContours(imGris, contours, -1, color_green, 20)
+                        cv2.drawContours(imGris, contours, -1, color_green, 20)
 
                 else:
                     x, y, w, h = cv2.boundingRect(f)

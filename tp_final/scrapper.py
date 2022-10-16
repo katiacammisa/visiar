@@ -18,4 +18,10 @@ def scrapPokemons():
             handler.write(img_data)
 
 
-scrapPokemons()
+# scrapPokemons()
+
+
+def getFromUrl(n,url):
+    img_data = requests.get(url).content
+    with open(f'./images/{n}.png', 'wb') as handler:
+        handler.write(img_data)

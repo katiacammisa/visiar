@@ -13,7 +13,7 @@ webcam_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 webcam_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 cv2.namedWindow("Fire Hair", cv2.WINDOW_NORMAL)
 
-# Inialize hair segmentation model
+# Initialize hair segmentation model
 hair_segmentation = HairSegmentation(webcam_width, webcam_height)
 
 while cap.isOpened():

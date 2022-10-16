@@ -16,8 +16,8 @@ model_path = "hair_segmentation.onnx"
 class HairSegmentation:
 
     def __init__(self, webcam_width, webcam_height):
-        self.session = onnxruntime.InferenceSession(model_path)
         # Initialize model
+        self.session = onnxruntime.InferenceSession(model_path)
         model_outputs = self.session.get_outputs()
         self.output_shape = model_outputs[0].shape
         self.output_width = self.output_shape[3]
@@ -33,9 +33,11 @@ class HairSegmentation:
         self.fire_img_num = 0
 
     def __call__(self, image):
+        # Gets mask of hair
         return self.segment_hair(image)
 
     def segment_hair(self, image):
+        # Transforms image to serve as input to the model
         input_tensor = self.prepare_input(image)
 
         # Perform inference on the image
@@ -81,6 +83,7 @@ class HairSegmentation:
         # Find the rectangle that surrounds all the contours
         left, top, right, bottom = find_contours_rectangle(hair_mask)
 
+        # Resize fire
         fire_img[top:bottom, left:right] = cv2.resize(self.fire_imgs[self.fire_img_num][self.input_height // 4:, :, :],
                                                       (right - left, bottom - top))
         img[hair_mask > 0] = fire_img[hair_mask > 0]
@@ -95,12 +98,13 @@ class HairSegmentation:
 def get_fire_gif(img_width, img_height):
     # Read fire image
     fire_path = "fire.gif"
-    fire_image_url = "https://thumbs.gfycat.com/ShrillCooperativeBobwhite-max-1mb.gif"
-    imdata = urllib.request.urlopen(fire_image_url).read()
-    imbytes = bytearray(imdata)
-    open(fire_path, "wb+").write(imdata)
+    # Scrapping the gif and saving it
+    # fire_image_url = "https://thumbs.gfycat.com/ShrillCooperativeBobwhite-max-1mb.gif"
+    # imdata = urllib.request.urlopen(fire_image_url).read()
+    # imbytes = bytearray(imdata)
+    # open(fire_path, "wb+").write(imdata)
 
-    ## Read the gif from disk to `RGB`s using `imageio.miread`
+    # Read the gif from disk to `RGB`s using `imageio.miread`
     gif = imageio.mimread(fire_path)
 
     # convert form RGB to BGR and resize
@@ -109,18 +113,6 @@ def get_fire_gif(img_width, img_height):
     num_fire_imgs = len(fire_imgs)
 
     return num_fire_imgs, fire_imgs
-
-
-def download_gdrive_model(gdrive_id, model_path):
-    if not os.path.exists(model_path):
-        gdd.download_file_from_google_drive(file_id=gdrive_id,
-                                            dest_path='./tmp/tmp.tar.gz')
-        tar = tarfile.open("tmp/tmp.tar.gz", "r:gz")
-        tar.extractall(path="tmp/")
-        tar.close()
-
-        shutil.move("tmp/saved_model_512x512/model_float32_opt.onnx", model_path)
-        shutil.rmtree("tmp/")
 
 
 def find_contours_rectangle(mask):

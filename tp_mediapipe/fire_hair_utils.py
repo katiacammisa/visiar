@@ -46,6 +46,8 @@ class HairSegmentation:
         # Process output data
         hair_mask = self.process_output(outputs)
 
+        print(hair_mask)
+
         return hair_mask
 
     def prepare_input(self, image):

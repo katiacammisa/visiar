@@ -25,6 +25,7 @@ def main():
 
     while True:
         ret, frame = cap.read()
+        colors = frame.copy()
         gray_frame = apply_color_convertion(frame=frame, color=cv2.COLOR_RGB2GRAY)
         ret1, thresh1 = cv2.threshold(gray_frame, 127, 255, cv2.THRESH_BINARY_INV)
         contours = get_contours(frame=thresh1, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
@@ -34,8 +35,6 @@ def main():
             if 30000 < cv2.contourArea(c):
                 filtered.append(c)
 
-        imGris = cv2.cvtColor(thresh1, cv2.COLOR_GRAY2RGB)
-
         if len(filtered) > 0:
 
             for f in filtered:
@@ -43,19 +42,50 @@ def main():
                 for index in range(len(pokeContours)):
                     if cv2.matchShapes(f, pokeContours[index], cv2.CONTOURS_MATCH_I2, 0) < 0.4:
                         x, y, w, h = cv2.boundingRect(f)
-                        cv2.putText(imGris, pokeDict.get(index).name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
-                        cv2.drawContours(imGris, f, -1, color_green, 20)
+                        text = getPokeData(pokeDict.get(index))
+                        for i, line in enumerate(text.split('\n')):
+                            y1 = y + i*50
+                            cv2.putText(colors, line, (x+w+10, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
+                        cv2.drawContours(colors, f, -1, color_green, 20)
 
                     # else:
                     #     x, y, w, h = cv2.boundingRect(f)
                     #     cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
                     #     cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
 
-        cv2.imshow('Tp Final', imGris)
+        cv2.imshow('Tp Final', colors)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cap.release()
+
+
+def getPokeData(poke):
+    if poke.number < 10:
+        number = str('00' + str(poke.number))
+    elif 10 <= poke.number < 100:
+        number = str('0' + str(poke.number))
+    else:
+        number = str(poke.number)
+    name = poke.name
+    attack = poke.attack
+    baseExp = poke.baseExp
+    type = poke.type
+    category = poke.category
+    weight1 = np.char.split(poke.weight, "(").tolist()[1]
+    weight2 = np.char.split(weight1, ")").tolist()[0]
+    height1 = np.char.split(poke.height, "(").tolist()[1]
+    height2 = np.char.split(height1, ")").tolist()[0]
+    abilities = poke.abilities
+    return "Number: " + number + \
+           "\nName: " + name + \
+           "\nAttack: " + str(attack) + \
+           "\nBase Experience: " + str(baseExp) + \
+           "\nType: " + str(type) + \
+           "\nCategory: " + str(category) + \
+           "\nWeight: " + str(weight2) + \
+           "\nHeight: " + str(height2) + \
+           "\nAbilities: " + abilities
 
 
 main()

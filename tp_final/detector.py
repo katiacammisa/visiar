@@ -21,19 +21,20 @@ def main():
     create_trackbar(trackbar_name2, window_name, 1, 50)
 
     pokeDict = getPokemonData()
-    pokeContours = getPokeContours(pokeDict)
+    pokeContours = getPokeContours()
 
     while True:
         ret, frame = cap.read()
         gray_frame = apply_color_convertion(frame=frame, color=cv2.COLOR_RGB2GRAY)
-        contours = get_contours(frame=gray_frame, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
+        ret1, thresh1 = cv2.threshold(gray_frame, 127, 255, cv2.THRESH_BINARY_INV)
+        contours = get_contours(frame=thresh1, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
         filtered = []
 
         for c in contours:
             if 30000 < cv2.contourArea(c):
                 filtered.append(c)
 
-        imGris = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
+        imGris = cv2.cvtColor(thresh1, cv2.COLOR_GRAY2RGB)
 
         if len(filtered) > 0:
 

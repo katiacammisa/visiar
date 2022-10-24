@@ -25,7 +25,7 @@ def savePokeCountours():
 
 def getPokeContours():
     list = []
-    for n in range(2):
+    for n in range(150):
         data = np.load(f'./pokeContours/{n}.npy')
         list.append(data)
     return list

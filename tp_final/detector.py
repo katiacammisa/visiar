@@ -6,6 +6,7 @@ from details import getPokemonData
 from frame_editor import apply_color_convertion
 from test import getPokeContours
 from trackbar import create_trackbar
+import functools
 
 
 def main():
@@ -19,6 +20,8 @@ def main():
     color_green = (0, 255, 0)
     create_trackbar(trackbar_name, window_name, 1, slider_max)
     create_trackbar(trackbar_name2, window_name, 1, 50)
+    brokenIndeces = [52, 61, 149, 148, 145, 144, 143, 141, 135, 130, 129, 126, 125, 124, 123, 121, 118, 117, 112, 111,
+                     109, 108, 98, 92, 91, 84, 83, 77, 76, 51, 48, 40, 37, 33, 25, 21, 5, 4, 54, 55, 58, 62, 66, 67, 73, 74]
 
     pokeDict = getPokemonData()
     pokeContours = getPokeContours()
@@ -45,25 +48,32 @@ def main():
 
             for f in filtered:
 
-                for index in range(len(pokeContours)):
-                    if cv2.matchShapes(f, pokeContours[index], cv2.CONTOURS_MATCH_I2, 0) < 0.4:
-                        x, y, w, h = cv2.boundingRect(f)
-                        text = getPokeData(pokeDict.get(index))
-                        for i, line in enumerate(text.split('\n')):
-                            y1 = y + i * 50
-                            cv2.putText(colors, line, (x + w + 10, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
-                        cv2.drawContours(colors, f, -1, color_green, 20)
+                matchedShapes = []
 
-                    # else:
-                    #     x, y, w, h = cv2.boundingRect(f)
-                    #     cv2.rectangle(imGris, (x, y), (x + w, y + h), color_red, 20)
-                    #     cv2.putText(imGris, 'Unidentified', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_red, 2)
+                for index in range(len(pokeContours)):
+                    if index in brokenIndeces:
+                        continue
+                    matchedShapes.append((cv2.matchShapes(f, pokeContours[index], cv2.CONTOURS_MATCH_I2, 0), index))
+
+                minimumMatchedShape = functools.reduce(lambda a, b: a if a[0] < b[0] else b, matchedShapes)
+                if minimumMatchedShape[0] < 0.3:
+                    x, y, w, h = cv2.boundingRect(f)
+                    draw_text(color_green, colors, f, minimumMatchedShape, pokeDict, w, x, y)
 
         cv2.imshow('Tp Final', colors)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cap.release()
+
+
+def draw_text(color_green, colors, f, minimumMatchedShape, pokeDict, w, x, y):
+    # Add text to pokemon
+    text = getPokeData(pokeDict.get(minimumMatchedShape[1]))
+    for i, line in enumerate(text.split('\n')):
+        y1 = y + i * 50
+        cv2.putText(colors, line, (x + w + 10, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color_green, 2)
+    cv2.drawContours(colors, f, -1, color_green, 20)
 
 
 def getPokeData(poke):

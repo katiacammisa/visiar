@@ -20,7 +20,7 @@ def main():
     color_green = (0, 255, 0)
     create_trackbar(trackbar_name, window_name, 1, slider_max)
     create_trackbar(trackbar_name2, window_name, 1, 50)
-    brokenIndeces = [52, 61, 149, 148, 145, 144, 143, 141, 135, 130, 129, 126, 125, 124, 123, 121, 118, 117, 112, 111,
+    brokenIndeces = [99,100,52, 61, 149, 148, 145, 144, 143, 141, 135, 130, 129, 126, 125, 124, 123, 121, 118, 117, 112, 111,
                      109, 108, 98, 92, 91, 84, 83, 77, 76, 51, 48, 40, 37, 33, 25, 21, 5, 4, 54, 55, 58, 62, 66, 67, 73, 74]
 
     pokeDict = getPokemonData()

@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from details import getPokemonData
 
 
 def cart2pol(x, y):
@@ -67,15 +68,12 @@ def generateWithFor(number, name):
             ret, frame = cap.read()
             cv2.drawContours(frame, final_cont, -1, color_green, 1)
             cv2.imshow('test', frame)
-            # cv2.waitKey()
+            cv2.waitKey()
 
 
 def main():
-    generateWithFor(1, 'Bulbasor')
-    generateWithFor(50, 'Dugtrio')
-    generateWithFor(41, 'Golbat')
-    generateWithFor(47, 'Venonat')
-    generateWithFor(78, 'Slowpoke')
+    # pokeDict = getPokemonData()
+    generateWithFor(79, 'Slowpoke')
 
 
 main()

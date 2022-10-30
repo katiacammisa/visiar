@@ -21,7 +21,7 @@ def getPokemonData():
     df = df[['#', 'Abilities', 'Attack', 'Base EXP', 'Egg Groups', 'Height', 'Name', 'Type', 'Weight', 'Image']]
     df = df.drop_duplicates(subset=["#"], ignore_index=True)
     pokeDict = {}
-    for poke in range(0, 152):
+    for poke in range(1, 152):
         pokeDict[poke] = Pokemon(df.get('#')[poke], df.get('Name')[poke], df.get('Attack')[poke],
                                  df.get('Base EXP')[poke],
                                  df.get('Type')[poke], df.get('Egg Groups')[poke], df.get('Weight')[poke],

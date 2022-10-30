@@ -25,6 +25,7 @@ def load_training_set():
             # Valores y resultados se necesitan por separados
     trainData = np.array(trainData, dtype=np.float32)
     trainLabels = np.array(trainLabels, dtype=np.int32)
+    print(trainData)
 
 
 def train_model():

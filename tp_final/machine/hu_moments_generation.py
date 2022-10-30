@@ -34,5 +34,5 @@ def generate_hu_moments_file():
         writer = csv.writer(file)
         # Ahora escribo los momentos de Hu de cada uno de las figuras. Con el string "rectangle...etc" busca en la carpeta donde estan cada una de las imagenes
         # generar los momentos de Hu y los escribe sobre este archivo. (LOS DE ENTRENAMIENTO).
-        for label in ["Bulbasor", "Ivysaur"]:
+        for label in ["Bulbasor", "Dugtrio", "Golbat", "Venonat", "Slowpoke"]:
             write_hu_moments(label, writer)

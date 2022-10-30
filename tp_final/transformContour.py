@@ -53,38 +53,29 @@ def scale_contour(cnt, scale):
     return cnt_scaled
 
 
+def generateWithFor(number, name):
+    color_green = (0, 255, 0)
+    cap = cv2.VideoCapture(0)
+    contour = np.load(f'./pokeContours/{number}.npy')
+    for x in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+        cont = scale_contour(contour, x / 10)
+        for a in [1, 10, 20, 50, 120, 130, 150, 180, 200, 240, 260, 280, 300, 310, 350]:
+            print(x)
+            print(a)
+            final_cont = rotate_contour(cont, a)
+            np.save(f'./pokeShapes/{name}/{number}-{x}-{a}.npy', final_cont)
+            ret, frame = cap.read()
+            cv2.drawContours(frame, final_cont, -1, color_green, 1)
+            cv2.imshow('test', frame)
+            # cv2.waitKey()
+
+
 def main():
-    contour = np.load(f'./pokeContours/0.npy')
-    cnt_scaled = scale_contour(contour, 0.3)
-    cnt_rotated = rotate_contour(contour, 60)
-    cnt_scaled1 = scale_contour(contour, 0.6)
-    cnt_rotated1 = rotate_contour(contour, 80)
-    cnt_scaled2 = scale_contour(contour, 0.9)
-    cnt_rotated2 = rotate_contour(contour, 20)
-
-    contour1 = np.load(f'./pokeContours/1.npy')
-    cnt_scaled3 = scale_contour(contour1, 0.3)
-    cnt_rotated3 = rotate_contour(contour1, 60)
-    cnt_scaled4 = scale_contour(contour1, 0.6)
-    cnt_rotated4 = rotate_contour(contour1, 80)
-    cnt_scaled5 = scale_contour(contour1, 0.9)
-    cnt_rotated5 = rotate_contour(contour1, 20)
-
-    np.save(f'./pokeShapes/Bulbasor/0-0.npy', contour)
-    np.save(f'./pokeShapes/Bulbasor/0-1.npy', cnt_scaled)
-    np.save(f'./pokeShapes/Bulbasor/0-2.npy', cnt_rotated)
-    np.save(f'./pokeShapes/Bulbasor/0-3.npy', cnt_scaled1)
-    np.save(f'./pokeShapes/Bulbasor/0-4.npy', cnt_rotated1)
-    np.save(f'./pokeShapes/Bulbasor/0-5.npy', cnt_scaled2)
-    np.save(f'./pokeShapes/Bulbasor/0-6.npy', cnt_rotated2)
-
-    np.save(f'./pokeShapes/Ivysaur/1-0.npy', contour1)
-    np.save(f'./pokeShapes/Ivysaur/1-1.npy', cnt_scaled3)
-    np.save(f'./pokeShapes/Ivysaur/1-2.npy', cnt_rotated3)
-    np.save(f'./pokeShapes/Ivysaur/1-3.npy', cnt_scaled4)
-    np.save(f'./pokeShapes/Ivysaur/1-4.npy', cnt_rotated4)
-    np.save(f'./pokeShapes/Ivysaur/1-5.npy', cnt_scaled5)
-    np.save(f'./pokeShapes/Ivysaur/1-6.npy', cnt_rotated5)
+    generateWithFor(1, 'Bulbasor')
+    generateWithFor(50, 'Dugtrio')
+    generateWithFor(41, 'Golbat')
+    generateWithFor(47, 'Venonat')
+    generateWithFor(78, 'Slowpoke')
 
 
 main()

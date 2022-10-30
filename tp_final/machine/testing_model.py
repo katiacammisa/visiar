@@ -22,17 +22,17 @@ def load_and_test(model):
                 filtered.append(c)
 
         if len(filtered) > 0:
-            for f in filtered:
-                moments = cv2.moments(f)
-                huMoments = cv2.HuMoments(moments)
-                for i in range(0, 7):
-                    huMoments[i] = -1 * math.copysign(1.0, huMoments[i]) * math.log10(
-                        abs(huMoments[i]))
-                sample = np.array([huMoments], dtype=np.float32)  # numpy
-                testResponse = model.predict(sample)[1]  # Predice la clase de cada file
-                print(testResponse)
-                # image_with_text = cv2.putText(frame, int_to_label(testResponse), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                #                               (255, 0, 0), 2, cv2.LINE_AA)
+            f = min(filtered, key=lambda cont: cv2.contourArea(cont))
+            moments = cv2.moments(f)
+            huMoments = cv2.HuMoments(moments)
+            for i in range(0, 7):
+                huMoments[i] = -1 * math.copysign(1.0, huMoments[i]) * math.log10(
+                    abs(huMoments[i]))
+            sample = np.array([huMoments], dtype=np.float32)  # numpy
+            testResponse = model.predict(sample)[1]  # Predice la clase de cada file
+            print(int_to_label(testResponse))
+            # image_with_text = cv2.putText(frame, int_to_label(testResponse), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1,
+            #                               (255, 0, 0), 2, cv2.LINE_AA)
 
         cv2.imshow('Tp Final', frame)
 

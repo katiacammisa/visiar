@@ -15,7 +15,7 @@ def main():
     trackbar_name2 = 'Noise filter'
     slider_max = 255
     cv2.namedWindow(window_name)
-    cap = cv2.VideoCapture(0)  # Replace 0 with droidcam app link (hhtp://IP:port/video)
+    cap = cv2.VideoCapture(0)  # Replace 0 with droidcam app link (http://IP:port/video)
     color_red = (0, 0, 255)
     color_green = (0, 255, 0)
     create_trackbar(trackbar_name, window_name, 1, slider_max)

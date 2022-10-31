@@ -11,7 +11,8 @@ from hu_moments_generation import getLabels
 def most_repeated(lst):
     return max(set(lst), key=lst.count)
 
-def load_and_test(model):
+def load_and_test():
+    model = cv2.ml.DTrees_load('model.yml')
     cap = cv2.VideoCapture(0)  # Replace 0 with droidcam app link (http://IP:port/video)
     lastMatches = []
 
@@ -34,10 +35,11 @@ def load_and_test(model):
                 huMoments[i] = -1 * math.copysign(1.0, huMoments[i]) * math.log10(
                     abs(huMoments[i]))
             sample = np.array([huMoments], dtype=np.float32)  # numpy
-            testResponse = model.predict(sample)[1]  # Predice la clase de cada file
+            testResponse = model.predict(sample)[1]
+            print(testResponse)# Predice la clase de cada file
             lastMatches.append(testResponse[0][0])
             matchedPokemonNumber = most_repeated(lastMatches)
-            print(getLabels().get(matchedPokemonNumber))
+            print(getLabels()[int(matchedPokemonNumber)])
             # image_with_text = cv2.putText(frame, int_to_label(testResponse), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1,
             #                               (255, 0, 0), 2, cv2.LINE_AA)
 
@@ -49,3 +51,6 @@ def load_and_test(model):
             break
 
     cap.release()
+
+
+load_and_test()

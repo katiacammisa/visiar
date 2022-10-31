@@ -35,4 +35,5 @@ def train_model():
     tree.setCVFolds(1)
     tree.setMaxDepth(10)
     tree.train(trainData, cv2.ml.ROW_SAMPLE, trainLabels)
+    tree.save("model.yml")
     return tree

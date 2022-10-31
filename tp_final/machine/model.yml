@@ -1,0 +1,243 @@
+%YAML:1.0
+---
+opencv_ml_dtree:
+   format: 3
+   is_classifier: 1
+   var_all: 8
+   var_count: 7
+   ord_var_count: 7
+   cat_var_count: 1
+   training_params:
+      use_surrogates: 0
+      max_categories: 10
+      regression_accuracy: 9.9999997764825821e-03
+      max_depth: 10
+      min_sample_count: 10
+      cross_validation_folds: 0
+   global_var_idx: 1
+   var_idx: [ 0, 1, 2, 3, 4, 5, 6 ]
+   var_type: [ 0, 0, 0, 0, 0, 0, 0, 1 ]
+   cat_ofs: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+   class_labels: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+       16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+       32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+       48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
+       64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+       80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
+       96, 97, 98, 99, 100, 101 ]
+   missing_subst: [ 0., 0., 0., 0., 0., 0., 0., 0. ]
+   nodes:
+      -
+         depth: 0
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:0, quality:270., le:3.5580122470855713e-01 }
+      -
+         depth: 1
+         value: 14.
+         norm_class_idx: 14
+      -
+         depth: 1
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:0, quality:270., le:4.5663517713546753e-01 }
+      -
+         depth: 2
+         value: 77.
+         norm_class_idx: 77
+         splits:
+            - { var:2, quality:270., le:1.3991630077362061e+00 }
+      -
+         depth: 3
+         value: 77.
+         norm_class_idx: 77
+      -
+         depth: 3
+         value: 87.
+         norm_class_idx: 87
+         splits:
+            - { var:1, quality:270., le:2.1298699378967285e+00 }
+      -
+         depth: 4
+         value: 100.
+         norm_class_idx: 100
+         splits:
+            - { var:2, quality:270., le:1.6203864812850952e+00 }
+      -
+         depth: 5
+         value: 101.
+         norm_class_idx: 101
+      -
+         depth: 5
+         value: 100.
+         norm_class_idx: 100
+      -
+         depth: 4
+         value: 87.
+         norm_class_idx: 87
+      -
+         depth: 2
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:0, quality:270., le:4.8682874441146851e-01 }
+      -
+         depth: 3
+         value: 78.
+         norm_class_idx: 78
+      -
+         depth: 3
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:0, quality:270., le:7.7407538890838623e-01 }
+      -
+         depth: 4
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:1, quality:270., le:1.6691737174987793e+00 }
+      -
+         depth: 5
+         value: 8.
+         norm_class_idx: 8
+         splits:
+            - { var:0, quality:270., le:5.5942779779434204e-01 }
+      -
+         depth: 6
+         value: 10.
+         norm_class_idx: 10
+         splits:
+            - { var:2, quality:270., le:2.6063413619995117e+00 }
+      -
+         depth: 7
+         value: 10.
+         norm_class_idx: 10
+      -
+         depth: 7
+         value: 59.
+         norm_class_idx: 59
+      -
+         depth: 6
+         value: 8.
+         norm_class_idx: 8
+         splits:
+            - { var:2, quality:270., le:2.3934278488159180e+00 }
+      -
+         depth: 7
+         value: 46.
+         norm_class_idx: 46
+      -
+         depth: 7
+         value: 8.
+         norm_class_idx: 8
+         splits:
+            - { var:3, quality:270., le:3.2161014080047607e+00 }
+      -
+         depth: 8
+         value: 65.
+         norm_class_idx: 65
+      -
+         depth: 8
+         value: 8.
+         norm_class_idx: 8
+      -
+         depth: 5
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:1, quality:270., le:1.8343801498413086e+00 }
+      -
+         depth: 6
+         value: 11.
+         norm_class_idx: 11
+         splits:
+            - { var:0, quality:270., le:6.1242508888244629e-01 }
+      -
+         depth: 7
+         value: 72.
+         norm_class_idx: 72
+      -
+         depth: 7
+         value: 11.
+         norm_class_idx: 11
+      -
+         depth: 6
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:2, quality:270., le:1.9696204662322998e+00 }
+      -
+         depth: 7
+         value: 15.
+         norm_class_idx: 15
+      -
+         depth: 7
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:3, quality:270., le:3.3591022491455078e+00 }
+      -
+         depth: 8
+         value: 21.
+         norm_class_idx: 21
+         splits:
+            - { var:0, quality:270., le:5.5755525827407837e-01 }
+      -
+         depth: 9
+         value: 34.
+         norm_class_idx: 34
+      -
+         depth: 9
+         value: 21.
+         norm_class_idx: 21
+         splits:
+            - { var:0, quality:270., le:5.8998525142669678e-01 }
+      -
+         depth: 10
+         value: 69.
+         norm_class_idx: 69
+      -
+         depth: 10
+         value: 21.
+         norm_class_idx: 21
+      -
+         depth: 8
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:0, quality:270., le:5.7239598035812378e-01 }
+      -
+         depth: 9
+         value: 62.
+         norm_class_idx: 62
+      -
+         depth: 9
+         value: 0.
+         norm_class_idx: 0
+         splits:
+            - { var:2, quality:270., le:2.3419990539550781e+00 }
+      -
+         depth: 10
+         value: 84.
+         norm_class_idx: 84
+      -
+         depth: 10
+         value: 0.
+         norm_class_idx: 0
+      -
+         depth: 4
+         value: 29.
+         norm_class_idx: 29
+         splits:
+            - { var:1, quality:270., le:3.5357270240783691e+00 }
+      -
+         depth: 5
+         value: 81.
+         norm_class_idx: 81
+      -
+         depth: 5
+         value: 29.
+         norm_class_idx: 29

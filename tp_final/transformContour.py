@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 from details import getPokemonData
@@ -55,25 +57,23 @@ def scale_contour(cnt, scale):
 
 
 def generateWithFor(number, name):
-    color_green = (0, 255, 0)
-    cap = cv2.VideoCapture(0)
     contour = np.load(f'./pokeContours/{number}.npy')
     for x in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
         cont = scale_contour(contour, x / 10)
         for a in [1, 10, 20, 50, 120, 130, 150, 180, 200, 240, 260, 280, 300, 310, 350]:
-            print(x)
-            print(a)
             final_cont = rotate_contour(cont, a)
             np.save(f'./pokeShapes/{name}/{number}-{x}-{a}.npy', final_cont)
-            ret, frame = cap.read()
-            cv2.drawContours(frame, final_cont, -1, color_green, 1)
-            cv2.imshow('test', frame)
-            cv2.waitKey()
 
 
 def main():
-    # pokeDict = getPokemonData()
-    generateWithFor(79, 'Slowpoke')
+    pokeDict = getPokemonData()
+    brokenIndexes = [99, 100, 52, 61, 149, 148, 145, 144, 143, 141, 135, 130, 129, 126, 125, 124, 123, 121, 118, 117,
+                     112, 111, 109, 108, 98, 92, 91, 84, 83, 77, 76, 51, 48, 40, 37, 33, 25, 21, 5, 4, 54, 55, 58, 62,
+                     66, 67, 73, 74]
+    for i in range(150):
+        if i in brokenIndexes: continue
+        os.makedirs('./pokeShapes/' + pokeDict.get(i).name)
+        generateWithFor(pokeDict.get(i).number, pokeDict.get(i).name)
 
 
 main()

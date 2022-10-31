@@ -4,8 +4,9 @@ import glob
 import numpy
 import math
 
+from details import getPokemonData
 
-# Escribo los valores de los momentos de Hu en el archivo
+
 def write_hu_moments(label, writer):
     print(label)
     files = glob.glob('../pokeShapes/' + label + '/*')  # label recibe el nombre de la carpeta
@@ -32,7 +33,18 @@ def generate_hu_moments_file():
     with open('generated-files/shapes-hu-moments.csv', 'w',
               newline='') as file:  # Se genera un archivo nuevo (W=Write)
         writer = csv.writer(file)
-        # Ahora escribo los momentos de Hu de cada uno de las figuras. Con el string "rectangle...etc" busca en la carpeta donde estan cada una de las imagenes
-        # generar los momentos de Hu y los escribe sobre este archivo. (LOS DE ENTRENAMIENTO).
-        for label in ["Bulbasor", "Dugtrio", "Golbat", "Venonat", "Slowpoke"]:
+        for label in getLabels():
             write_hu_moments(label, writer)
+
+
+def getLabels():
+    labels = []
+    brokenIndexes = [99, 100, 52, 61, 149, 148, 145, 144, 143, 141, 135, 130, 129, 126, 125, 124, 123, 121, 118, 117,
+                     112, 111, 109, 108, 98, 92, 91, 84, 83, 77, 76, 51, 48, 40, 37, 33, 25, 21, 5, 4, 54, 55, 58, 62,
+                     66, 67, 73, 74]
+    pokeDict = getPokemonData()
+    for i in range(150):
+        if i in brokenIndexes: continue
+        labels.append(pokeDict.get(i).name)
+
+    return labels

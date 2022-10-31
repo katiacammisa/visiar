@@ -3,7 +3,7 @@ import csv
 
 import numpy as np
 
-from label_converters import label_to_int
+from hu_moments_generation import getLabels
 
 trainData = []
 trainLabels = []
@@ -21,11 +21,10 @@ def load_training_set():
             for n in row:
                 floats.append(float(n))  # tiene los momentos de Hu transformados a float.
             trainData.append(np.array(floats, dtype=np.float32))  # momentos de Hu
-            trainLabels.append(np.array([label_to_int(class_label)], dtype=np.int32))  # Resultados
+            trainLabels.append(np.array([getLabels().index(class_label)], dtype=np.int32))  # Resultados
             # Valores y resultados se necesitan por separados
     trainData = np.array(trainData, dtype=np.float32)
     trainLabels = np.array(trainLabels, dtype=np.int32)
-    print(trainData)
 
 
 def train_model():
